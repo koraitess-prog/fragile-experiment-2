@@ -1,0 +1,201 @@
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-300.css';
+:root{color-scheme:dark;font-family:'IBM Plex Mono',monospace;color:#fff;background:#000;font-synthesis:none;--secondary:#b1b1b1;--muted:#999}
+*{box-sizing:border-box}body{margin:0;min-width:280px;background:#000}button,a{-webkit-tap-highlight-color:transparent}button{color:inherit;font:inherit;background:none;border:0;cursor:pointer;padding:12px 0;letter-spacing:.05em;font-size:10px;min-height:44px}button:disabled{opacity:.4;cursor:wait}a{color:inherit;text-underline-offset:4px}button:hover,a:hover{color:#aaa}button:focus-visible,a:focus-visible,#sculpture:focus-visible{outline:1px solid #fff;outline-offset:5px}::selection{color:#000;background:#fff}p,h1,h2{margin:0}button,dialog{scrollbar-color:#777 #111}.masthead{height:90px;position:absolute;z-index:4;inset:0 38px auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.wordmark{font-size:16px;letter-spacing:.14em;text-decoration:none}.wordmark span{font-size:9px;letter-spacing:.08em;color:var(--secondary);margin-left:14px}#header-count{margin-left:24px;color:var(--secondary);font-variant-numeric:tabular-nums}main{height:100svh;min-height:660px;position:relative;isolation:isolate;overflow:hidden}#sculpture{position:absolute;inset:75px 0 168px;touch-action:none;cursor:grab;outline-offset:-8px}#sculpture:active{cursor:grabbing}canvas{display:block;width:100%;height:100%}.loading-label{position:absolute;inset:45% 0 auto;text-align:center;font-size:11px;color:var(--secondary)}.species-heading{position:absolute;bottom:134px;left:24px;right:24px;text-align:center;pointer-events:none;transition:opacity .7s}h1{font-size:clamp(22px,2.6vw,38px);font-weight:300;letter-spacing:-.035em;line-height:1.2}#scientific-name{font-size:11px;font-weight:300;color:var(--secondary);margin-top:12px}.interaction{position:absolute;bottom:55px;left:0;right:0;text-align:center}#reveal{font-size:10px;letter-spacing:.14em}#reveal span{margin-left:12px}#interaction-hint{font-size:8px;letter-spacing:.07em;color:var(--secondary);margin-top:2px}footer{position:absolute;z-index:4;bottom:9px;left:38px;right:38px;display:flex;align-items:center;justify-content:space-between}footer button{font-size:9px;color:var(--secondary)}.journey-caption{position:absolute;top:100px;left:0;right:0;text-align:center;font-size:9px;letter-spacing:.18em;opacity:0;transition:opacity .5s;pointer-events:none}.journey-track{margin:16px auto;width:130px;height:1px;background:#333;overflow:hidden}.journey-track i{height:1px;width:45%;background:#fff;display:block;animation:travel 2s ease-in-out infinite}@keyframes travel{from{transform:translateX(-100%)}to{transform:translateX(330%)}}
+.world-notes{position:absolute;inset:105px 5vw 195px;pointer-events:none;opacity:0;visibility:hidden;transition:opacity 1s,visibility 1s}.world-note{position:absolute;max-width:230px;width:22%;font-size:11px;line-height:1.6;opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s}.world-note h2{font-size:10px;font-weight:400;line-height:1.6;color:var(--secondary);margin:0 0 12px}.world-note p{color:var(--secondary)}.world-note .number{color:#fff;font-size:clamp(26px,3.5vw,49px);line-height:1.1;font-weight:300;letter-spacing:-.04em;margin-bottom:12px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.number .unit{font-size:12px;letter-spacing:0;margin-left:8px}.world-note .scope{font-size:9px;line-height:1.65;margin-top:13px;color:#999}.note-population{top:0;left:0}.note-home{top:0;right:0}.note-measure{bottom:0;left:0}.note-risk{bottom:0;right:0}.world-note .place{font-size:15px;line-height:1.5;color:white;margin-bottom:12px;font-weight:300}.icon-space{height:55px;width:50px;margin-bottom:10px}.pressures{line-height:1.8}.globe-caption{position:absolute;left:25%;right:25%;top:76%;text-align:center;font-size:10px;color:var(--secondary);line-height:1.5}.globe-caption button{display:block;margin:7px auto 0;font-size:8px;pointer-events:auto}.location-dot{width:5px;height:5px;border:1px solid white;display:inline-block;transform:rotate(45deg);margin-right:9px}.world-notes p,.world-notes h2{pointer-events:auto;user-select:text}.world-notes .scope{max-width:32ch}
+body[data-mode=world] .world-notes{opacity:1;visibility:visible}body[data-mode=world] .world-note{opacity:1;transform:none}body[data-mode=world] .note-home{transition-delay:.13s}body[data-mode=world] .note-measure{transition-delay:.25s}body[data-mode=world] .note-risk{transition-delay:.38s}body[data-mode=world] .species-heading{bottom:125px}body[data-mode=dispersing] .journey-caption,body[data-mode=assembling] .journey-caption,body[data-mode=returning] .journey-caption{opacity:1}body[data-mode=dispersing] .species-heading,body[data-mode=assembling] .species-heading,body[data-mode=returning] .species-heading{opacity:.25}body[data-mode=dispersing] .interaction,body[data-mode=assembling] .interaction,body[data-mode=returning] .interaction{opacity:.4;pointer-events:none}
+dialog{background:#080808;color:white;border:1px solid #393939;padding:30px;width:min(1000px,94vw);max-height:88svh}dialog::backdrop{background:#000d}dialog h2{font-size:clamp(25px,4vw,44px);font-weight:300;letter-spacing:-.035em;margin:35px 0}dialog p{font-size:12px;line-height:1.9;color:var(--secondary);max-width:70ch}.dialog-top{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.08em}#collection-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.collection-choice{padding:14px;text-align:left;border:1px solid #242424;letter-spacing:0}.collection-choice:hover,.collection-choice.active{border-color:#999}.collection-choice svg{width:100%;display:block;aspect-ratio:1.5}.thumb-lines{fill:none;stroke:currentColor;stroke-width:.45}.tile-number{font-size:9px;color:#999}.tile-name{display:block;font-size:10px;line-height:1.5;margin-top:8px}.source-list{padding-left:20px;margin:25px 0}.source-list li{margin:16px 0;font-size:12px}.source-list small{display:block;margin-top:5px;color:#aaa}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(min-width:1450px){.world-note{max-width:270px}.world-notes{inset-inline:8vw}.world-note .scope{font-size:10px}.world-note{font-size:12px}}
+@media(max-width:759px){.masthead{inset-inline:20px;height:72px}.wordmark{font-size:13px}.wordmark span{display:none}#open-index{font-size:8px}#header-count{margin-left:12px}main{min-height:760px}#sculpture{inset:70px 0 170px}.species-heading{bottom:137px}h1{font-size:24px}footer{left:20px;right:20px;bottom:10px}footer button{font-size:8px}footer button span{display:none}#open-sources{font-size:8px}.world-notes{inset:75px 22px 210px}.world-note{width:46%;max-width:none;font-size:9px;line-height:1.5}.world-note h2{font-size:8px;margin-bottom:8px}.world-note .number{font-size:29px;margin-bottom:6px}.world-note .place{font-size:12px;margin-bottom:6px}.world-note .scope{font-size:8px;margin-top:8px}.note-population,.note-home{top:0}.note-measure,.note-risk{bottom:0}.icon-space{height:39px;width:42px;margin-bottom:5px}.globe-caption{left:12%;right:12%;top:54%;font-size:9px}.globe-caption button{margin-top:0}.number .unit{font-size:10px}.journey-caption{top:80px;font-size:8px}#collection-grid{grid-template-columns:repeat(2,1fr)}dialog{padding:20px}body[data-mode=world] #sculpture{inset:230px 0 360px}body[data-mode=world] main{min-height:890px}body[data-mode=world] .world-notes{bottom:195px}body[data-mode=world] .globe-caption{top:54%}body[data-mode=world] .species-heading{bottom:130px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* Keep the mobile chapter vertically composed; its facts can scroll without crowding the globe. */
+body{position:relative}.sr-only{top:0;left:0}
+@media(max-width:759px){body[data-mode=world] main{min-height:1040px}body[data-mode=world] #sculpture{inset:70px 0 170px}body[data-mode=world] .world-notes{inset:80px 22px 210px}body[data-mode=world] .globe-caption{top:74%}}
+@media(min-width:760px){body[data-mode=world] main{min-height:780px}.globe-caption{top:91%}}
+@media(min-width:760px){body[data-mode=world] main{min-height:720px}.world-notes{bottom:180px}.globe-caption button{display:inline-block;min-height:28px;padding:6px 0;margin:0 0 0 12px}}
+@media(max-width:759px){.globe-caption #globe-region,.globe-caption .location-dot{display:none}}
+@media(min-width:760px){.icon-space{height:45px;margin-bottom:6px}.world-notes .scope{max-width:none}}
+/* The world chapter carries only survival, habitat and pressures. */
+body[data-mode=world] #scientific-name,
+body[data-mode=world] .interaction{display:none}
+body[data-mode=world] .species-heading{bottom:62px}
+.note-risk{left:0;right:auto}
+.pressures{list-style:none;padding:0;margin:0;font-size:13px;line-height:1.6;color:var(--secondary);pointer-events:auto}
+.pressures li+li{margin-top:9px}
+.collection-sources{display:block;margin-top:24px;color:var(--secondary);font-size:9px}
+@media(max-width:759px){body[data-mode=world] .species-heading{bottom:72px}.pressures{font-size:11px}.note-risk{width:85%;max-width:300px}}
+/* Clear wayfinding; the original FRAGILE application is unaffected. */
+footer #next{display:flex;align-items:center;gap:22px;justify-content:space-between;min-width:184px;min-height:50px;padding:12px 18px;border:1px solid #aaa;color:#fff;font-size:13px;letter-spacing:.09em;background:#000}
+footer #next span{display:inline;font-size:11px}
+footer #next:hover{border-color:#fff;background:#151515}
+footer #next:disabled{opacity:.45}
+.habitat-pin-label{position:absolute;z-index:2;pointer-events:none;padding:6px 8px;color:white;background:#000;font-size:9px;line-height:1.2;letter-spacing:.09em;transform:translate(24px,-43px);white-space:nowrap;border-bottom:1px solid #fff}
+.habitat-pin-label::before{content:'';position:absolute;left:-24px;bottom:-1px;width:33px;height:1px;background:#fff;transform:rotate(-45deg);transform-origin:right center}
+.habitat-pin-label.flip{transform:translate(calc(-100% - 24px),-43px)}
+.habitat-pin-label.flip::before{left:auto;right:-24px;transform:rotate(45deg);transform-origin:left center}
+.habitat-pin-label[hidden]{display:none}
+@media(max-width:759px){footer #next{min-width:150px;min-height:48px;padding:10px 14px;gap:14px}footer #next span{font-size:10px}.habitat-pin-label{font-size:8px}}
+footer{position:fixed;bottom:16px}
+footer{left:0;right:0;bottom:0;padding:12px 38px;background:#000}
+@media(max-width:759px){footer{padding:10px 20px}}
+/* Regional relief is a data drawing, independent of the approved animal meshes. */
+.terrain-note{right:0;bottom:0;left:auto;max-width:230px;pointer-events:auto}
+.terrain-topline{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px;margin-bottom:5px}
+.terrain-topline h2{margin:0;font-size:9px}
+.terrain-modes{display:flex;gap:9px}
+.terrain-modes button{font-size:8px;letter-spacing:.03em;min-height:30px;padding:5px 0;color:#999;border-bottom:1px solid transparent}
+.terrain-modes button[aria-pressed=true]{color:#fff;border-color:#fff}
+.terrain-drawing{aspect-ratio:1;border:1px solid #333;width:100%;overflow:hidden}
+.terrain-drawing svg,#population-history svg{width:100%;height:auto;display:block;fill:none;font-family:'IBM Plex Mono',monospace}
+.terrain-drawing svg text,#population-history svg text{fill:#bbb;stroke:none;font-size:11px;letter-spacing:0}
+.plot-frame,.plot-axis{stroke:#777;stroke-width:.7;fill:none}
+.plot-grid{stroke:#333;stroke-width:.7;fill:none}
+.terrain-mesh{stroke:#ddd;stroke-width:.65;fill:none;stroke-linejoin:round}
+.relief-base{stroke:#666;stroke-width:.7;fill:none}
+.terrain-contours{stroke:#ddd;stroke-width:.85;fill:none}
+.profile-line{stroke:#fff;stroke-width:1.25;fill:none}
+.terrain-note .terrain-caption{font-size:8px;line-height:1.6;margin-top:7px;color:#aaa}
+.terrain-caption span{display:block}.terrain-caption a{text-decoration:none}
+.terrain-loading{padding:25px;font-size:10px!important;line-height:1.8}
+#population-history{margin-top:14px}#population-history[hidden]{display:none}
+#population-history p{font-size:8px;color:#aaa;margin-bottom:5px}
+.history-column{stroke:#ddd;stroke-width:.8;fill:none}
+body[data-mode=world] .terrain-note{transition-delay:.45s}
+@media(max-width:759px){.terrain-note{width:50%;max-width:none;bottom:-90px}.terrain-topline{gap:0}.terrain-topline h2{font-size:9px}.terrain-modes{width:100%;justify-content:space-between;gap:6px}.terrain-modes button{font-size:8px;min-height:34px}.terrain-note .terrain-caption{font-size:8px}.note-risk{width:43%;bottom:-90px}.note-home .place{font-size:11px}.note-home p{font-size:9px}#population-history{margin-top:10px}#population-history svg text{font-size:12px}}
+@media(max-width:759px){.terrain-note{bottom:-100px}.terrain-drawing svg text{font-size:16px}}
+/* Keep the name above the persistent navigation and compact short desktops. */
+@media(min-width:760px){body[data-mode=world] .species-heading{bottom:100px}#population-history svg text{font-size:14px}}
+@media(min-width:760px) and (max-height:800px){.terrain-note{max-width:210px}#population-history{margin-top:8px}#population-history svg{height:80px}#population-history p{margin-bottom:3px}}
+@media(max-width:759px){#population-history svg text{font-size:16px}}
+/* One viewport on desktop; centered navigation follows the species name. */
+#animal-miniature{display:none;position:absolute;left:50%;transform:translateX(-50%);width:142px;height:95px;padding:0;bottom:142px;z-index:2}
+#animal-miniature svg{width:100%;height:100%;display:block}
+body[data-mode=world] #animal-miniature{display:block}
+footer{background:none;pointer-events:none;padding:0;bottom:20px;left:28px;right:28px;height:50px}
+footer button{pointer-events:auto}
+footer #next{position:absolute;left:50%;transform:translateX(-50%);top:0;justify-content:center}
+.species-heading,body[data-mode=world] .species-heading{bottom:84px}
+body[data-mode=animal] .species-heading{bottom:177px}
+.interaction{bottom:96px}
+body:is([data-mode=dispersing],[data-mode=assembling],[data-mode=returning]) :is(.masthead,footer,.species-heading,.interaction,.world-notes,.journey-caption,#animal-miniature,.habitat-pin-label){opacity:0!important;visibility:hidden!important;transition:none!important;pointer-events:none!important}
+@media(min-width:760px){
+ html,body{height:100%;overflow:hidden}
+ main,body[data-mode=world] main{height:100svh;min-height:0}
+ #sculpture{inset:70px 0 285px}
+ body[data-mode=world] #sculpture{inset:70px 0 255px}
+ .world-notes{inset:94px 4vw 165px}
+ .world-note{width:22%;max-width:230px;font-size:10px;line-height:1.5}
+ .world-note h2{font-size:9px;margin-bottom:7px}
+ .world-note .scope{font-size:9px;margin-top:7px}
+ .world-note .place{font-size:14px;margin-bottom:8px}
+ .world-note .number{font-size:clamp(26px,3vw,44px);margin-bottom:7px}
+ .icon-space{height:48px;margin-bottom:5px}
+ .note-risk{bottom:0;max-width:220px}
+ .pressures{font-size:11px}.pressures li+li{margin-top:5px}
+ .terrain-note{width:min(22%,27svh);max-width:220px}
+ .globe-caption{top:auto;bottom:77px;left:36%;right:36%}
+ .globe-caption #globe-region,.globe-caption .location-dot{display:none}
+ .globe-caption button{margin:0;font-size:8px}
+ #population-history{margin-top:8px}#population-history svg{max-height:90px}
+ .terrain-note .terrain-caption{font-size:8px;line-height:1.4}
+}
+@media(min-width:760px) and (max-height:700px){
+ .masthead{height:64px}.world-notes{top:72px;bottom:151px}
+ .icon-space{display:none}.world-note .place{font-size:12px}.world-note{font-size:9px}
+ .world-note h2{font-size:8px}.world-note .scope{font-size:8px}
+ #population-history svg{height:65px}.pressures{font-size:10px}
+ #animal-miniature{height:75px;bottom:132px}
+ body[data-mode=world] #sculpture{inset:65px 0 225px}
+ .terrain-topline{gap:0}.terrain-modes button{min-height:26px;font-size:7px}
+}
+@media(max-width:759px){
+ footer{left:18px;right:18px;bottom:12px}
+ body[data-mode=world] #animal-miniature{bottom:134px;height:85px;width:128px}
+ body[data-mode=world] .species-heading{bottom:78px}
+ body[data-mode=animal] .species-heading{bottom:173px}
+ .interaction{bottom:91px}
+}
+/* The information chapter has two quiet rails, with Earth between them. */
+.species-summary{position:absolute;left:0;top:0;bottom:0;width:24%;max-width:255px;display:flex;flex-direction:column;gap:14px;pointer-events:auto}
+.species-summary .world-note{position:static;width:100%;max-width:none;flex:0 0 auto}
+body[data-mode=world] #animal-miniature{position:static;transform:none;width:150px;height:95px;min-height:0;flex:0 0 auto;align-self:flex-start;display:block}
+.terrain-studies{display:flex;flex-direction:column;gap:10px}
+.terrain-study{margin:0}
+.terrain-study figcaption{font-size:8px;line-height:1.5;color:#b1b1b1;margin-bottom:5px}
+.terrain-note h2{margin-bottom:10px}
+@media(min-width:760px){
+ .world-notes{inset:86px 4vw 105px}
+ .terrain-note{top:0;bottom:auto;width:clamp(106px,calc((100svh - 260px)/3),210px);max-width:none}
+ .terrain-note .terrain-caption{font-size:8px;line-height:1.4}
+ .species-summary{gap:clamp(8px,1.5svh,15px)}
+ .species-summary .note-home .place{font-size:13px;margin-bottom:5px}
+ .species-summary .note-home h2,.species-summary .note-risk h2{margin-bottom:5px}
+ #population-history svg{height:clamp(50px,10svh,85px)}
+ .species-summary #population-history{margin-top:6px}
+ .globe-caption{bottom:67px}
+ body[data-mode=world] #sculpture{inset:80px 0 160px}
+}
+@media(min-width:760px) and (max-height:700px){
+ .world-notes{top:70px;bottom:88px}
+ body[data-mode=world] #animal-miniature{height:65px;width:115px}
+ .species-summary{gap:8px}
+ .species-summary .note-home .place{font-size:12px}
+ .species-summary .world-note{font-size:9px}
+ .terrain-studies{gap:7px}.terrain-study figcaption{font-size:7px;margin-bottom:3px}
+ .terrain-note h2{font-size:8px;margin-bottom:7px}
+ .terrain-note .terrain-caption{font-size:7px}
+ body[data-mode=world] #sculpture{inset:65px 0 150px}
+}
+@media(max-width:759px){
+ body[data-mode=world] main{min-height:1500px}
+ .world-notes,body[data-mode=world] .world-notes{inset:80px 22px 250px}
+ .species-summary{width:45%;gap:18px}
+ body[data-mode=world] #animal-miniature{width:120px;height:80px}
+ .species-summary .world-note{width:100%}
+ .terrain-note{top:0;bottom:auto;width:47%;max-width:none}
+ .terrain-study figcaption{font-size:8px}
+ .terrain-note .terrain-caption{font-size:8px}
+ body[data-mode=world] #sculpture{inset:650px 0 180px}
+ .globe-caption{top:auto!important;bottom:20px}
+}
+/* Sculpture chapter: only the animal, a small name and one gesture hint. */
+body[data-mode=animal] :is(.masthead,footer,#scientific-name,#reveal){display:none}
+body[data-mode=animal] .species-heading{bottom:102px}
+body[data-mode=animal] h1{font-size:16px;font-weight:400;letter-spacing:.015em;line-height:1.5}
+body[data-mode=animal] .interaction{bottom:67px;pointer-events:none}
+body[data-mode=animal] #interaction-hint{font-size:10px;letter-spacing:.08em;line-height:1.7;color:#b1b1b1;margin:0}
+body[data-mode=animal] #sculpture{inset:35px 0 165px}
+@media(max-width:759px){body[data-mode=animal] main{height:100svh;min-height:0}body[data-mode=animal] h1{font-size:14px}body[data-mode=animal] #interaction-hint{font-size:8px}body[data-mode=animal] .species-heading{bottom:89px}body[data-mode=animal] .interaction{bottom:54px}body[data-mode=animal] #sculpture{inset:20px 0 145px}}
+/* Match the world chapter's caption to the quiet sculpture caption. */
+body[data-mode=world] .species-heading{bottom:152px}
+body[data-mode=world] h1{font-size:16px;font-weight:400;letter-spacing:.015em;line-height:1.5}
+body[data-mode=world] .interaction{display:block;bottom:122px;pointer-events:none}
+body[data-mode=world] #reveal{display:none}
+body[data-mode=world] #interaction-hint{font-size:10px;letter-spacing:.08em;line-height:1.7;color:#b1b1b1;margin:0}
+body[data-mode=world] footer{bottom:54px}
+@media(max-width:759px){body[data-mode=world] h1{font-size:14px}body[data-mode=world] #interaction-hint{font-size:8px}body[data-mode=world] .species-heading{bottom:143px}body[data-mode=world] .interaction{bottom:115px}body[data-mode=world] footer{bottom:48px}}
+/* Advance quietly from the world chapter, without a second navigation button. */
+body[data-mode=world] footer{display:none}
+body[data-mode=world] .interaction{pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:10px;bottom:111px}
+body[data-mode=world] #reveal{display:inline-block;font-size:10px;letter-spacing:.08em;line-height:1.7;min-height:44px;padding:10px 0;color:#b1b1b1}
+body[data-mode=world] #reveal:hover{color:#fff}
+body[data-mode=world] #interaction-hint::before{content:'·';margin-right:10px}
+@media(max-width:759px){body[data-mode=world] #reveal{font-size:8px}body[data-mode=world] .interaction{bottom:104px;gap:8px}}
+/* Share the same projection rectangle throughout the desktop journey. */
+@media(min-width:760px){
+ body #sculpture,body[data-mode=animal] #sculpture,body[data-mode=world] #sculpture{inset:35px 0 165px}
+ .species-summary{justify-content:space-between;gap:14px}
+ .globe-caption{bottom:117px}
+}
+@media(min-width:760px) and (max-height:700px){.species-summary{gap:8px}.globe-caption{bottom:108px}}
+#population-qualifier{font-size:10px;letter-spacing:.04em;margin-bottom:5px;color:#b1b1b1}
+#population-qualifier[hidden]{display:none}
+@media(max-width:759px){.globe-caption{bottom:75px}#population-qualifier{font-size:9px}}
+/* On narrow screens, settle the destination layout while fragments are dispersed,
+   not when the completed globe and its information are revealed. */
+@media(max-width:759px){
+ body[data-mode=dispersing] main{height:100svh;min-height:0}
+ body[data-mode=dispersing] #sculpture{inset:20px 0 145px}
+ body[data-mode=assembling] main{height:100svh;min-height:1500px}
+ body[data-mode=assembling] #sculpture{inset:650px 0 180px}
+}

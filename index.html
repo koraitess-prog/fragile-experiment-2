@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000">
+<meta name="description" content="One animal. An entire world. An interactive wireframe atlas of endangered life."><title>FRAGILE — Field Atlas</title>
+</head>
+<body data-mode="animal">
+<header class="masthead"><a class="wordmark" href="./">FRAGILE<span> / FIELD ATLAS</span></a><button id="open-index" aria-haspopup="dialog">THE COLLECTION <span id="header-count">01 / 10</span></button></header>
+<main id="exhibition">
+ <div id="sculpture" tabindex="0" role="button" aria-label="Reveal the animal’s world. Click or press Enter. Drag to rotate." aria-describedby="interaction-hint"><span class="loading-label">ASSEMBLING LIFE…</span></div>
+ <div class="journey-caption" aria-hidden="true"><span id="journey-caption">ONE LIFE. AN ENTIRE WORLD.</span><div class="journey-track"><i></i></div></div>
+ <section id="field-notes" class="world-notes" aria-label="Species information" inert>
+  <div class="species-summary">
+  <button id="animal-miniature" aria-label="Next animal"></button>
+  <article class="world-note note-population"><h2>Remaining in the wild</h2><p id="population-qualifier" hidden></p><p class="number" id="population-value"></p><p id="population-unit"></p><p class="scope" id="status-label"></p><div id="population-history" hidden></div></article>
+  <article class="world-note note-home"><h2>Where it lives</h2><p class="place" id="habitat-region"></p><p id="habitat-biome"></p></article>
+  <article class="world-note note-risk"><h2>What threatens its future</h2><ul class="pressures" id="threats"></ul></article>
+  </div>
+  <section class="world-note terrain-note" id="terrain-panel" aria-label="Regional terrain study">
+   <h2 data-terrain-title>Habitat relief</h2>
+   <div class="terrain-studies" data-terrain-drawing></div><p class="terrain-caption" data-terrain-caption></p>
+  </section>
+  <div class="globe-caption"><span class="location-dot"></span><span id="globe-region"></span><button id="reset-view" aria-label="Recenter the habitat globe">RECENTER</button></div>
+ </section>
+ <div class="species-heading"><h1 id="species-name">Black rhinoceros</h1><p id="scientific-name">Diceros bicornis</p></div>
+ <div class="interaction"><button id="reveal" disabled>REVEAL ITS WORLD <span aria-hidden="true">↗</span></button><p id="interaction-hint">CLICK TO DISCOVER · DRAG TO ROTATE</p></div>
+</main>
+<footer><button id="previous" aria-label="Previous species">← <span>PREVIOUS</span></button><button id="next" aria-label="Next animal"><span>NEXT ANIMAL</span> →</button></footer>
+<dialog id="collection-dialog" aria-labelledby="collection-title"><div class="dialog-top"><span>FRAGILE / FIELD ATLAS</span><button data-close aria-label="Close collection">CLOSE ×</button></div><h2 id="collection-title">Ten lives. Ten worlds.</h2><div id="collection-grid"></div><button id="open-sources" class="collection-sources" aria-haspopup="dialog">SOURCES & DATA NOTES ↗</button></dialog>
+<dialog id="sources-dialog" aria-labelledby="sources-title"><div class="dialog-top"><span>FRAGILE / RESEARCH</span><button data-close aria-label="Close sources">CLOSE ×</button></div><h2 id="sources-title">Behind the numbers.</h2><div id="source-content"></div></dialog>
+<div class="sr-only" id="announcer" role="status" aria-live="polite"></div>
+<script type="module" src="/src/main.js"></script>
+</body></html>
