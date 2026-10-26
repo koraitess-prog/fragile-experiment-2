@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {interpolateFrame} from './framing.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {faceData} from './sculpture/geometry.js';
 import {createNaturalMotion} from './sculpture/natural-motion.js';
@@ -52,7 +53,8 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  const shapes=[[[[-.20,-.65],[.20,-.65],[.27,-.30],[-.27,-.30]],[[-.40,-.22],[.40,-.22],[.60,.22],[.23,.15],[.22,.75],[-.22,.75],[-.23,.15],[-.60,.22]]],[[[-.85,.65],[-.18,-.70],[.20,.10],[.48,-.32],[.92,.65]]],[[[-.65,-.70],[.65,-.70],[.65,.70],[-.65,.70]]],[[[0,-.8],[.72,-.48],[.55,.30],[0,.85],[-.55,.30],[-.72,-.48]]]];
  function layoutIcons(){const rect=container.parentElement.getBoundingClientRect(),out=[];document.querySelectorAll('[data-icon]').forEach((el,k)=>{const r=el.getBoundingClientRect();if(!r.width||!r.height)return;const cx=r.left-rect.left+r.width/2,cy=r.top-rect.top+r.height/2,scale=22;for(const polygon of shapes[{population:0,habitat:1,risk:3}[el.dataset.icon]??k]){const p=polygon.map(([x,y])=>new THREE.Vector2(x,y));for(const face of THREE.ShapeUtils.triangulateShape(p,[])){const tri=face.flatMap(i=>[cx+p[i].x*scale,cy+p[i].y*scale,0]);out.push(...subdivide(tri));}}});iconTargets=new Float32Array(out);iconPositions=iconTargets.slice();iconGeo.setAttribute('position',new THREE.BufferAttribute(iconPositions,3).setUsage(THREE.DynamicDrawUsage));}
  function drawIcons(progress){icons.visible=progress>0;for(let i=0;i<iconTargets.length;i+=9){const u=smooth((progress-random(i+8)*.2)/.8),side=random(i+7)>.5?-100:container.clientWidth+100,cy=random(i+11)*container.clientHeight;for(let j=0;j<3;j++){const o=i+j*3;iconPositions[o]=side+(iconTargets[o]-side)*u;iconPositions[o+1]=cy+(iconTargets[o+1]-cy)*u;iconPositions[o+2]=0;}}iconGeo.attributes.position.needsUpdate=true;}
- let width=1,height=1,fullHeight=1,stageTop=0;
+ let width=1,height=1,fullHeight=1,stageTop=0,projectionHeight=0,projectionTop=0,projectionTween=null;
+ function applyProjection(frame){projectionHeight=frame.height;projectionTop=frame.top;camera.setViewOffset(width,projectionHeight,0,-projectionTop,width,fullHeight);}
  function resize(){
   width=container.parentElement.clientWidth;
   const mobileWorld=width<760&&(mode==='world'||mode==='assembling'),slot=document.querySelector('#mobile-globe-slot');
@@ -65,7 +67,13 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
   // Extend the existing stage frustum above and below, without moving the
   // assembled animal or globe. Only fragments use the extra screen space.
   renderer.setSize(width,fullHeight);renderer.domElement.style.position='absolute';renderer.domElement.style.top=-stageTop+'px';
-  camera.setViewOffset(width,height,0,-stageTop,width,fullHeight);
+  const target={height,top:stageTop};
+  if(busy&&width<760&&projectionHeight>0){
+   if(!projectionTween||projectionTween.to.height!==height||projectionTween.to.top!==stageTop){
+    if(Math.abs(projectionHeight-height)>.01||Math.abs(projectionTop-stageTop)>.01)projectionTween={from:{height:projectionHeight,top:projectionTop},to:target,start:performance.now()/1000};
+   }
+   applyProjection({height:projectionHeight,top:projectionTop});
+  }else{projectionTween=null;applyProjection(target);}
   ortho.right=width;ortho.bottom=fullHeight;ortho.updateProjectionMatrix();layoutIcons();
  }
 
@@ -75,7 +83,7 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
   direction.copy(camera.position).normalize();right.crossVectors(camera.up,direction).normalize();up.crossVectors(direction,right);
   const tan=Math.tan(camera.fov*Math.PI/360),mobile=width<760,padding=kind==='animal' ? .72 : mobile ? .86 : .67;
   let distance=6;
-  for(let i=0;i<data.length;i+=3){p.fromArray(data,i);distance=Math.max(distance,p.dot(direction)+Math.abs(p.dot(right))/(tan*camera.aspect*padding),p.dot(direction)+Math.abs(p.dot(up))/(tan*(mobile ? .68 : .70)));}
+  for(let i=0;i<data.length;i+=3){p.fromArray(data,i);distance=Math.max(distance,p.dot(direction)+Math.abs(p.dot(right))/(tan*(width/height)*padding),p.dot(direction)+Math.abs(p.dot(up))/(tan*(mobile ? .68 : .70)));}
   return distance;
  }
  function fit(dt){
@@ -109,6 +117,7 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
    if(destination==='world'&&elapsed>=3&&mode!=='assembling'){mode='assembling';notify();if(width<760){resize();departureDistance=camera.position.length();flightDistance=requiredDistance(flight.target,'world');cameraStarted=time;}}
    if(elapsed>=JOURNEY_SECONDS){busy=false;controls.enabled=true;active=next;mode=destination;worldProgress=mode==='world'?1:0;if(mode==='animal')setPositions(pose(active,time));notify();}
   }else if(mode==='animal')positions.set(pose(active,time));
+  if(projectionTween){const elapsed=time-projectionTween.start;applyProjection(interpolateFrame(projectionTween.from,projectionTween.to,elapsed));if(elapsed>=1.2)projectionTween=null;}
   geometry.attributes.position.needsUpdate=true;
   earthUniform.value=worldProgress;
   // Annotations appear only after every fragment has reached its destination.
@@ -127,10 +136,11 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
   renderer.render(scene,camera);drawIcons(busy?0:geographyOpacity);renderer.autoClear=false;renderer.clearDepth();renderer.render(overlay,ortho);renderer.autoClear=true;frames++;
  }
  raf=requestAnimationFrame(render);notify();
+ function timeSinceStart(){return performance.now()/1000-started;}
  function diagnostics(){
   const box=new THREE.Box3();let offscreenVertices=0;camera.updateMatrixWorld();
   for(let i=0;i<positions.length;i+=3){p.fromArray(positions,i).project(camera);box.expandByPoint(p);if(Math.abs(p.x)>1||Math.abs(p.y)>1)offscreenVertices++;}
-  return{mode,busy,species:profiles[active].id,faces:positions.length/9,worldProgress,cameraDistance:camera.position.length(),stageHeight:height,stageTop,frames,azimuth:controls.getAzimuthalAngle(),fullyVisible:offscreenVertices===0,offscreenVertices,screenBounds:{left:box.min.x,right:box.max.x,bottom:box.min.y,top:box.max.y},wireframe:material.wireframe,geographyVisible:geography.visible,annotationOpacity:geographyOpacity,iconTriangles:iconTargets.length/9,visibleHabitatMarkers:markerGroup.children.filter(m=>m.visible).length,habitatLabelVisible:!pinLabel.hidden};
+  return{mode,busy,species:profiles[active].id,faces:positions.length/9,worldProgress,cameraDistance:camera.position.length(),stageHeight:height,stageTop,projectionHeight,projectionTop,journeyElapsed:busy?timeSinceStart():null,frames,azimuth:controls.getAzimuthalAngle(),fullyVisible:offscreenVertices===0,offscreenVertices,screenBounds:{left:box.min.x,right:box.max.x,bottom:box.min.y,top:box.max.y},wireframe:material.wireframe,geographyVisible:geography.visible,annotationOpacity:geographyOpacity,iconTriangles:iconTargets.length/9,visibleHabitatMarkers:markerGroup.children.filter(m=>m.visible).length,habitatLabelVisible:!pinLabel.hidden};
  }
 
  return{reveal,select,reset,diagnostics,dispose(){disposed=true;cancelAnimationFrame(raf);observer.disconnect();controls.dispose();geometry.dispose();material.dispose();coastGeo.dispose();coastMaterial.dispose();markerGeo.dispose();markerMaterial.dispose();ringGeo.dispose();ringMaterial.dispose();pinLabel.remove();earth?.geometry.dispose();iconGeo.dispose();iconMat.dispose();renderer.dispose();container.removeEventListener('pointerdown',pointerDown);container.removeEventListener('pointermove',pointerMove);container.removeEventListener('pointerup',pointerUp);container.removeEventListener('pointercancel',cancel);}};

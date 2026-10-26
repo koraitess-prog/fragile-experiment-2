@@ -3,3 +3,4 @@ dist/
 *.log
 qa/journey-frames/
 qa/spread-frames/
+qa/framing-motion-frames/

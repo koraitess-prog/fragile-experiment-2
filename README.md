@@ -35,4 +35,6 @@ See [SOURCES.md](SOURCES.md) and [THIRD_PARTY](THIRD_PARTY). Population figures 
 
 GitHub Pages deploys this repository independently on pushes to `main`. The workflow builds with the repository-specific base path, tests the source and uploads only `dist`.
 
-Prepared from local atlas checkpoint `c896a7d`. Local QA captures and editor configuration are retained in the development workspace and excluded from this publication snapshot.
+Prepared from local atlas checkpoint `e5cf112`. Local QA captures and editor configuration are retained in the development workspace and excluded from this publication snapshot.
+
+Mobile fragment journeys interpolate responsive camera framing continuously, preserving the existing breakup/reassembly choreography. The regression suite includes projection continuity checks at both responsive transitions.
