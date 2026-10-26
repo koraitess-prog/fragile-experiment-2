@@ -10,7 +10,8 @@ This experiment is independent of the original FRAGILE site at https://koraitess
 
 - Drag an animal to rotate it; click to discover its world.
 - Explore the globe, regional terrain studies, population context and threats.
-- Click the globe or CLICK FOR NEXT ANIMAL to assemble the next species.
+- On desktop, click the globe or CLICK FOR NEXT ANIMAL to assemble the next species.
+- On phones, the information becomes a full-width vertical reading journey. Drag the globe to explore; use the fixed NEXT ANIMAL text action to advance. Globe taps do not switch species.
 - The collection allows direct species selection.
 
 ## Run locally
@@ -34,4 +35,4 @@ See [SOURCES.md](SOURCES.md) and [THIRD_PARTY](THIRD_PARTY). Population figures 
 
 GitHub Pages deploys this repository independently on pushes to `main`. The workflow builds with the repository-specific base path, tests the source and uploads only `dist`.
 
-Prepared from local atlas checkpoint `89f8b6c90bea152fb528ff54d9fdb08a70b23473`. Local QA captures and editor configuration are retained in the development workspace and excluded from this publication snapshot.
+Prepared from local atlas checkpoint `c896a7d`. Local QA captures and editor configuration are retained in the development workspace and excluded from this publication snapshot.

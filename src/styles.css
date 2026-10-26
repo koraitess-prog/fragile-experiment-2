@@ -199,3 +199,50 @@ body[data-mode=world] #interaction-hint::before{content:'·';margin-right:10px}
  body[data-mode=assembling] main{height:100svh;min-height:1500px}
  body[data-mode=assembling] #sculpture{inset:650px 0 180px}
 }
+/* Phone chapter: an editorial, single-column journey below the globe. */
+.mobile-profile-title,#mobile-globe-slot,#mobile-history-slot{display:none}
+@media(max-width:759px){
+ body:is([data-mode=world],[data-mode=assembling]) main{height:auto;min-height:100svh;overflow:clip;padding-top:74px;padding-bottom:100px}
+ body:is([data-mode=world],[data-mode=assembling]) .world-notes{position:relative;inset:auto;display:grid;grid-template-columns:72px minmax(0,1fr);gap:26px 16px;margin:0 24px;pointer-events:none}
+ .species-summary{display:contents}
+ body:is([data-mode=world],[data-mode=assembling]) #animal-miniature{position:static;display:block;grid-area:1/1;width:72px;height:64px;transform:none;pointer-events:none;align-self:center}
+ .mobile-profile-title{display:block;grid-area:1/2;align-self:center;pointer-events:auto}
+ .mobile-profile-title h2{font-size:18px;line-height:1.4;font-weight:300;letter-spacing:-.02em;color:#fff}
+ .mobile-profile-title p{font-size:10px;color:#b1b1b1;line-height:1.6;margin-top:7px}
+ .species-summary .world-note{position:static;width:100%;max-width:none;grid-column:1/-1;pointer-events:auto}
+ .species-summary .note-population{grid-row:2;padding-top:10px}
+ .note-population h2{font-size:10px;margin-bottom:8px}
+ .note-population .number{font-size:42px;margin-bottom:8px}
+ .note-population #population-unit{font-size:11px;line-height:1.65;max-width:33ch}
+ .note-population #status-label{display:none}
+ #mobile-globe-slot{display:block;grid-area:3/1/4/-1;height:clamp(280px,44svh,390px);position:relative;margin-inline:-12px;pointer-events:none}
+ #mobile-globe-slot p{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:9px;letter-spacing:.12em;color:#b1b1b1}
+ body:is([data-mode=world],[data-mode=assembling]) .globe-caption{position:static;grid-area:4/1/5/-1;font-size:12px;line-height:1.7;text-align:center;margin-top:-12px;padding-bottom:26px;border-bottom:1px solid #242424;pointer-events:auto}
+ .globe-caption #globe-region{display:block}.globe-caption .location-dot{display:none}
+ .globe-caption button{margin:4px auto 0;font-size:9px;min-height:44px}
+ .species-summary .note-home{grid-row:5;padding-top:5px}
+ .species-summary .note-risk{grid-row:6}
+ .species-summary .note-home h2,.species-summary .note-risk h2{font-size:10px;margin-bottom:12px}
+ .species-summary .note-home .place{font-size:20px;line-height:1.5;margin-bottom:12px}
+ .species-summary .note-home p{font-size:13px;line-height:1.8}
+ .species-summary .pressures{font-size:14px;line-height:1.8}
+ .pressures li+li{margin-top:6px}
+ #mobile-history-slot:not([hidden]){display:block;grid-area:7/1/8/-1;padding:14px 0 25px;border-bottom:1px solid #242424;pointer-events:auto}
+ #mobile-history-slot #population-history{margin:0}
+ #mobile-history-slot #population-history p{font-size:11px;margin-bottom:12px}
+ #mobile-history-slot #population-history svg{height:auto;width:100%;max-height:none}
+ #mobile-history-slot #population-history svg text{font-size:12px}
+ .terrain-note{position:static;grid-area:8/1/9/-1;width:100%;max-width:none;padding-top:14px}
+ .terrain-note h2{font-size:14px;color:#fff;margin-bottom:22px}
+ .terrain-studies{gap:30px}
+ .terrain-study figcaption{font-size:11px;margin-bottom:12px;color:#b1b1b1}
+ .terrain-note .terrain-drawing svg text{font-size:11px}
+ .terrain-note .terrain-caption{font-size:10px;line-height:1.8;margin-top:20px}
+ body[data-mode=world] .species-heading{display:none}
+ body[data-mode=world] .interaction{position:fixed;z-index:5;left:0;right:0;bottom:0;min-height:64px;padding:5px 24px calc(5px + env(safe-area-inset-bottom));border-top:1px solid #292929;background:#000;justify-content:flex-end}
+ body[data-mode=world] #reveal{min-height:48px;font-size:11px;letter-spacing:.12em;padding:10px 0}
+ body[data-mode=world] #interaction-hint{display:none}
+ .habitat-pin-label{font-size:8px}
+ body[data-mode=returning] main{height:100svh;min-height:0}
+ body[data-mode=returning] #sculpture{inset:20px 0 145px}
+}

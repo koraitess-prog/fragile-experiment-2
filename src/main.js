@@ -8,6 +8,19 @@ const $=s=>document.querySelector(s),params=new URLSearchParams(location.search)
 let current=speciesIndex(params.get('species')),viewer=null,mode='animal',loadedModels=null;
 const text=(selector,value)=>$(selector).textContent=value;
 const terrainPanel=createTerrainPanel($('#terrain-panel'));
+const narrowScreen=matchMedia('(max-width:759px)');
+function adaptInformation(){
+ const mobile=narrowScreen.matches;
+ (mobile?$('#mobile-history-slot'):$('.note-population')).append($('#population-history'));
+ $('#mobile-history-slot').hidden=!mobile||$('#population-history').hidden;
+ if(mode==='world'){
+  text('#reveal',mobile?'NEXT ANIMAL':'CLICK FOR NEXT ANIMAL');
+  $('#sculpture').setAttribute('aria-label',mobile?`${species[current].title.join(' ')}. Drag to explore habitat regions.`:`${species[current].title.join(' ')}. Earth showing indicative habitat regions. Click or Enter for the next animal. Drag to rotate.`);
+ }
+ $('#animal-miniature').setAttribute('aria-label',mobile?species[current].title.join(' '):'Next animal');
+ $('#animal-miniature').tabIndex=mobile?-1:0;$('#animal-miniature').setAttribute('role',mobile?'img':'button');
+}
+narrowScreen.addEventListener('change',adaptInformation);
 function renderProfile(index){
  current=index;
  if(loadedModels) $('#animal-miniature').innerHTML=thumbnail(loadedModels[index]);
@@ -15,6 +28,7 @@ function renderProfile(index){
  document.title=`${s.title.join(' ')} — FRAGILE Field Atlas`;
  text('#species-name',s.title.join(' '));
  text('#scientific-name',s.scientific);
+ text('#mobile-species-name',s.title.join(' '));text('#mobile-status',notes.conservationStatus);
  text('#header-count',`${String(index+1).padStart(2,'0')} / 10`);
  const fewer=notes.population.startsWith('<');
  $('#population-qualifier').hidden=!fewer;text('#population-qualifier',fewer?'Fewer than':'');
@@ -25,17 +39,18 @@ function renderProfile(index){
  text('#globe-region',notes.region);
  text('#status-label',notes.conservationStatus);
  $('#population-history').hidden=!s.history;$('#population-history').innerHTML=s.history?'<p>Reported estimates</p>'+populationHistoryMarkup(s):'';
+ adaptInformation();
  terrainPanel.update(s);
  $('#threats').replaceChildren(...notes.threats.map(threat=>{
   const item=document.createElement('li');item.textContent=threat;return item;
  }));
  document.querySelectorAll('[data-species]').forEach(el=>el.classList.toggle('active',Number(el.dataset.species)===index));
 }
-function onState(state){const changed=state.species!==current;if(changed)renderProfile(state.species);mode=state.mode;document.body.dataset.mode=mode;$('#field-notes').inert=mode!=='world';$('#field-notes').setAttribute('aria-hidden',String(mode!=='world'));for(const id of ['reveal','previous','next'])$('#'+id).disabled=state.busy;$('#open-index').disabled=state.busy;text('#reveal',mode==='world'?'CLICK FOR NEXT ANIMAL':'REVEAL ITS WORLD ↗');text('#interaction-hint',mode==='world'?'DRAG TO ROTATE':'CLICK TO DISCOVER · DRAG TO ROTATE');text('#journey-caption',mode==='dispersing'?'EVERY LIFE IS PART OF A LARGER WORLD.':mode==='assembling'?'A WORLD TAKES SHAPE.':'RETURNING TO LIFE.');$('#sculpture').setAttribute('aria-label',`${species[current].title.join(' ')}. ${mode==='world'?'Earth showing indicative habitat regions. Click or Enter for the next animal.':'Click or Enter to reveal its world.'} Drag to rotate.`);$('#sculpture').setAttribute('aria-busy',String(state.busy));$('#animal-miniature').setAttribute('aria-label','Next animal');if(!state.busy){const url=new URL(location.href);url.searchParams.set('species',species[current].id);url.searchParams.delete('view');history.replaceState({},'',url);text('#announcer',`${species[current].title.join(' ')}. ${mode==='world'?species[current].region+'. Habitat and statistics revealed.':'Animal sculpture.'}`);}}
+function onState(state){const changed=state.species!==current;if(changed)renderProfile(state.species);mode=state.mode;document.body.dataset.mode=mode;if(state.busy&&narrowScreen.matches)window.scrollTo({top:0,behavior:'instant'});$('#field-notes').inert=mode!=='world';$('#field-notes').setAttribute('aria-hidden',String(mode!=='world'));for(const id of ['reveal','previous','next'])$('#'+id).disabled=state.busy;$('#open-index').disabled=state.busy;text('#reveal',mode==='world'?'CLICK FOR NEXT ANIMAL':'REVEAL ITS WORLD ↗');text('#interaction-hint',mode==='world'?'DRAG TO ROTATE':'CLICK TO DISCOVER · DRAG TO ROTATE');text('#journey-caption',mode==='dispersing'?'EVERY LIFE IS PART OF A LARGER WORLD.':mode==='assembling'?'A WORLD TAKES SHAPE.':'RETURNING TO LIFE.');$('#sculpture').setAttribute('aria-label',`${species[current].title.join(' ')}. ${mode==='world'?'Earth showing indicative habitat regions. Click or Enter for the next animal.':'Click or Enter to reveal its world.'} Drag to rotate.`);$('#sculpture').setAttribute('aria-busy',String(state.busy));adaptInformation();if(!state.busy){const url=new URL(location.href);url.searchParams.set('species',species[current].id);url.searchParams.delete('view');history.replaceState({},'',url);text('#announcer',`${species[current].title.join(' ')}. ${mode==='world'?species[current].region+'. Habitat and statistics revealed.':'Animal sculpture.'}`);}}
 function select(index){index=(index+species.length)%species.length;viewer?.select(index);}
-$('#animal-miniature').addEventListener('click',()=>viewer?.reveal());
+$('#animal-miniature').addEventListener('click',()=>{if(!narrowScreen.matches)viewer?.reveal();});
 $('#reveal').addEventListener('click',()=>viewer?.reveal());$('#previous').addEventListener('click',()=>select(current-1));$('#next').addEventListener('click',()=>select(current+1));$('#reset-view').addEventListener('click',()=>viewer?.reset());
-$('#sculpture').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();viewer?.reveal();}if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();select(current+(e.key==='ArrowRight'?1:-1));}});
+$('#sculpture').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(mode!=='world'||!narrowScreen.matches)viewer?.reveal();}if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();select(current+(e.key==='ArrowRight'?1:-1));}});
 $('#open-index').addEventListener('click',()=>$('#collection-dialog').showModal());
 document.addEventListener('click',e=>{const b=e.target.closest('[data-species]');if(b){select(Number(b.dataset.species));$('#collection-dialog').close();}if(e.target.closest('[data-close]'))e.target.closest('dialog').close();});
 for(const d of document.querySelectorAll('dialog'))d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});

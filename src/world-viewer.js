@@ -17,7 +17,7 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  material.onBeforeCompile=shader=>{shader.uniforms.earthAmount=earthUniform;shader.vertexShader='varying vec3 hemisphere;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nhemisphere = normalize(normalMatrix * position);');shader.fragmentShader='uniform float earthAmount; varying vec3 hemisphere;\n'+shader.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\ngl_FragColor.a *= mix(1.0, mix(0.015, 0.22, smoothstep(-0.10, 0.15, hemisphere.z)), earthAmount);');};
  const geometry=new THREE.BufferGeometry(),mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;scene.add(mesh);
  const origin=performance.now()/1000,focusDirection=new THREE.Vector3(),rigs=models.map(m=>{const faces=faceData(m);return createNaturalMotion(faces.map(f=>[f,f]),{tigerClockOrigin:origin,orangutanClockOrigin:origin});});
- let active=initial,mode='animal',busy=false,flight=null,started=0,destination='world',next=initial,positions,disposed=false,raf,previous=0,frames=0,earth=null,worldProgress=0,geographyOpacity=0,flightDistance=0,departureDistance=0,cameraStarted=0;
+ let active=initial,mode='animal',busy=false,flight=null,started=0,destination='world',next=initial,positions,disposed=false,raf,previous=0,frames=0,earth=null,worldProgress=0,geographyOpacity=0,flightDistance=0,departureDistance=0,cameraStarted=0,departureFrame=null;
  const posed=models.map(m=>new Float32Array(m.positions));
  function pose(index,t){const p=posed[index];p.set(models[index].positions);rigs[index].apply(p,0,reduced?origin:t);return p;}
  function setPositions(data){geometry.dispose();positions=data.slice();geometry.setAttribute('position',new THREE.BufferAttribute(positions,3).setUsage(THREE.DynamicDrawUsage));}
@@ -54,7 +54,12 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  function drawIcons(progress){icons.visible=progress>0;for(let i=0;i<iconTargets.length;i+=9){const u=smooth((progress-random(i+8)*.2)/.8),side=random(i+7)>.5?-100:container.clientWidth+100,cy=random(i+11)*container.clientHeight;for(let j=0;j<3;j++){const o=i+j*3;iconPositions[o]=side+(iconTargets[o]-side)*u;iconPositions[o+1]=cy+(iconTargets[o+1]-cy)*u;iconPositions[o+2]=0;}}iconGeo.attributes.position.needsUpdate=true;}
  let width=1,height=1,fullHeight=1,stageTop=0;
  function resize(){
-  width=container.clientWidth;height=container.clientHeight;fullHeight=container.parentElement.clientHeight;
+  width=container.parentElement.clientWidth;
+  const mobileWorld=width<760&&(mode==='world'||mode==='assembling'),slot=document.querySelector('#mobile-globe-slot');
+  if(width<760&&departureFrame){container.style.top=departureFrame.top+'px';container.style.height=departureFrame.height+'px';container.style.bottom='auto';}
+  else if(mobileWorld&&slot){const parentRect=container.parentElement.getBoundingClientRect(),r=slot.getBoundingClientRect();container.style.top=(r.top-parentRect.top)+'px';container.style.height=r.height+'px';container.style.bottom='auto';}
+  else{container.style.removeProperty('top');container.style.removeProperty('height');container.style.removeProperty('bottom');}
+  height=container.clientHeight;fullHeight=width<760?Math.max(innerHeight,container.offsetTop+height+12):container.parentElement.clientHeight;
   stageTop=container.getBoundingClientRect().top-container.parentElement.getBoundingClientRect().top;
   if(!width||!height)return;
   // Extend the existing stage frustum above and below, without moving the
@@ -80,10 +85,10 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  }
 
  function notify(){onState({mode,busy,species:active});}
- function begin(to,index=active){if(busy)return;controls.enableDamping=false;controls.update();controls.enableDamping=true;destination=to;next=index;const time=performance.now()/1000;let source=mode==='animal'?subdivide(pose(active,time)):positions.slice(),target;
+ function begin(to,index=active){if(busy)return;controls.enableDamping=false;controls.update();controls.enableDamping=true;destination=to;next=index;const time=performance.now()/1000;departureFrame=width<760&&mode==='world'?{top:stageTop,height}:null;let source=mode==='animal'?subdivide(pose(active,time)):positions.slice(),target;
   if(to==='world'){earth?.geometry.dispose();focusDirection.copy(camera.position).normalize();earth=earthGeometry(profiles[active].focus,camera.quaternion);target=earth.positions;geography.quaternion.copy(earth.rotation);buildMarkers();}
   else target=subdivide(pose(index,time));
-  departureDistance=camera.position.length();flightDistance=requiredDistance(target,to);flight=makeFlight(source,target,camera.aspect,{orientation:camera.quaternion.clone(),distance:flightDistance,fov:camera.fov,width,fullHeight,stageHeight:height,top:stageTop});setPositions(source);busy=true;mode=to==='world'?'dispersing':'returning';started=time;cameraStarted=time;controls.enabled=false;notify();
+  departureDistance=camera.position.length();flightDistance=requiredDistance(target,to);flight=makeFlight(source,target,camera.aspect,{orientation:camera.quaternion.clone(),distance:flightDistance,fov:camera.fov,width,fullHeight,stageHeight:height,top:stageTop});setPositions(source);busy=true;mode=to==='world'?'dispersing':'returning';started=time;cameraStarted=time;controls.enabled=false;notify();if(departureFrame)resize();
   if(reduced)started-=JOURNEY_SECONDS;
  }
  function reveal(){if(mode==='animal')begin('world');else begin('animal',(active+1)%models.length);}
@@ -92,12 +97,13 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  let down=null;
  const pointerDown=e=>{if(e.isPrimary)down={x:e.clientX,y:e.clientY,id:e.pointerId,moved:false};};
  const pointerMove=e=>{if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>7)down.moved=true;};
- const pointerUp=e=>{if(!down||e.pointerId!==down.id)return;const click=!down.moved;down=null;if(click)reveal();};
+ const pointerUp=e=>{if(!down||e.pointerId!==down.id)return;const click=!down.moved;down=null;if(click&&!(mode==='world'&&width<760))reveal();};
  const cancel=()=>down=null;
  container.addEventListener('pointerdown',pointerDown);container.addEventListener('pointermove',pointerMove);container.addEventListener('pointerup',pointerUp);container.addEventListener('pointercancel',cancel);
  function render(ms){if(disposed)return;raf=requestAnimationFrame(render);if(document.hidden)return;const time=ms/1000,dt=Math.min(.05,previous?time-previous:1/60);previous=time;
   if(busy){const elapsed=time-started;camera.position.normalize().multiplyScalar(THREE.MathUtils.lerp(departureDistance,flightDistance,smooth((time-cameraStarted)/.9)));camera.lookAt(0,0,0);
    if(destination==='animal')flight.target.set(subdivide(pose(next,time)));
+   if(departureFrame&&elapsed>=2.8){departureFrame=null;resize();departureDistance=camera.position.length();flightDistance=requiredDistance(flight.target,'animal');cameraStarted=time;}
    sampleFlight(flight,elapsed,positions);
    worldProgress=destination==='world'?smooth((elapsed-4.3)/2.5):1-smooth(elapsed/1.1);
    if(destination==='world'&&elapsed>=3&&mode!=='assembling'){mode='assembling';notify();if(width<760){resize();departureDistance=camera.position.length();flightDistance=requiredDistance(flight.target,'world');cameraStarted=time;}}
