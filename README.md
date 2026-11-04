@@ -41,7 +41,7 @@ Mobile fragment journeys interpolate responsive camera framing continuously, pre
 
 ## Opening
 
-First entry in a tab session counts to the dated IUCN total of 49,505 threatened species, then types a short explanation of a growing selection of threatened life. The scope includes animals, plants and fungi; the 9 July 2026 source is linked on screen. Enter opens the loaded sculpture; Skip is always available. Reduced motion shows the final statistic and text immediately. Add `?intro=1` to replay the opening for review, or `?intro=0` to skip.
+First entry in a tab session counts to the dated IUCN total of 18,825 assessed threatened animal species, then types a short explanation of a growing selection of threatened life. The scope is assessed animal species classified CR, EN or VU; WWF Japan’s table reproducing IUCN Red List 2026-1 (9 July 2026) is linked on screen. This excludes plants and fungi and is not a complete count of all unassessed animals. Enter opens the loaded sculpture; Skip is always available. Reduced motion shows the final statistic and text immediately. Add `?intro=1` to replay the opening for review, or `?intro=0` to skip.
 
 
 ### Slower typography-to-sculpture opening

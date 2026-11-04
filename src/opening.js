@@ -1,11 +1,11 @@
 export const OPENING_FACT={
- total:49505,
+ total:18825,
  date:'9 July 2026',
- source:'https://iucn.org/press-release/202607/desert-frog-deep-sea-molluscs-remarkable-species-risk-iucn-red-list',
+ source:'https://www.wwf.or.jp/activities/basicinfo/3559.html',
  lines:['Species are threatened with extinction.','FRAGILE reveals a fraction of them.'],
 };
 export const COUNT_MS=5400,TYPE_START_MS=6600,CHAR_MS=48,LINE_PAUSE_MS=650;
-const sessionKey='fragile-experiment-2-opening-v2';
+const sessionKey='fragile-experiment-2-opening-v3';
 
 export function openingFrame(milliseconds,reduced=false){
  const t=Math.max(0,Math.min(1,milliseconds/COUNT_MS));
