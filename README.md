@@ -35,6 +35,10 @@ See [SOURCES.md](SOURCES.md) and [THIRD_PARTY](THIRD_PARTY). Population figures 
 
 GitHub Pages deploys this repository independently on pushes to `main`. The workflow builds with the repository-specific base path, tests the source and uploads only `dist`.
 
-Prepared from local atlas checkpoint `e5cf112`. Local QA captures and editor configuration are retained in the development workspace and excluded from this publication snapshot.
+Prepared from local atlas checkpoint `2aa04a0`. Local QA captures and editor configuration are retained in the development workspace and excluded from this publication snapshot.
 
 Mobile fragment journeys interpolate responsive camera framing continuously, preserving the existing breakup/reassembly choreography. The regression suite includes projection continuity checks at both responsive transitions.
+
+## Opening
+
+First entry in a tab session counts to the dated IUCN total of 49,505 threatened species, then types a short explanation of this ten-species collection. The scope includes animals, plants and fungi; the 9 July 2026 source is linked on screen. Enter opens the loaded sculpture; Skip is always available. Reduced motion shows the final statistic and text immediately. Add `?intro=1` to replay the opening for review, or `?intro=0` to skip.

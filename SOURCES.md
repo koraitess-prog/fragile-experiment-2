@@ -39,3 +39,7 @@ Only coastlines are displayed, not national boundaries. Hemisphere clipping is a
 - **Scope:** representative regional tiles, not complete species distributions or individual animal locations. Elevations are sampled; visual relief is independently amplified. Marine examples show the seabed, not swimming depth. Exact source tile URLs, bounds and retrieval dates are in each `public/terrain/*.json` file.
 
 Processing details and usage notes: `THIRD_PARTY/Terrain-data.md`. No stock-reference imagery is included.
+
+## Opening statistic
+
+49,505 threatened species, among 175,909 assessed species, from IUCN’s 9 July 2026 release: https://iucn.org/press-release/202607/desert-frog-deep-sea-molluscs-remarkable-species-risk-iucn-red-list . The total includes animals, plants and fungi. It is a dated Red List total, not a live species-loss counter or a count of individual animals. The opening’s ten-species sample is the current FRAGILE collection. Verified 4 November 2026.

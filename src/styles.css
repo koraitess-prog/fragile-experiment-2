@@ -246,3 +246,25 @@ body[data-mode=world] #interaction-hint::before{content:'·';margin-right:10px}
  body[data-mode=returning] main{height:100svh;min-height:0}
  body[data-mode=returning] #sculpture{inset:20px 0 145px}
 }
+/* Opening: one factual number, then a quiet typed explanation. */
+.opening[hidden]{display:none}
+.opening{position:fixed;inset:0;z-index:20;background:#000;color:#fff;opacity:1;transition:opacity .55s ease;overflow:hidden}
+.opening.is-leaving{opacity:0;pointer-events:none}
+body[data-opening=true]{overflow:hidden;min-width:0}
+body[data-opening=true]>:is(header,main,footer){visibility:hidden}
+.opening-number{position:absolute;left:0;right:0;top:47%;transform:translateY(-50%);text-align:center;font-size:clamp(72px,13vw,164px);font-weight:300;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.opening-message{position:absolute;top:calc(47% + clamp(36px,6.5vw,82px) + 30px);left:24px;right:24px;text-align:center}
+.opening-copy{max-width:620px;margin:auto;min-height:70px;font-size:clamp(13px,1.2vw,17px);font-weight:300;line-height:1.8;letter-spacing:.01em}
+.opening-copy p+ p{margin-top:7px;color:#b1b1b1}
+.opening-copy p:empty::before{content:'\00a0'}
+.opening-copy p:not(:empty):last-child::after{content:'';display:inline-block;width:1px;height:1em;background:#fff;vertical-align:-.12em;margin-left:3px}
+.opening[data-typed=true] .opening-copy p::after{display:none}
+.opening-enter{font-size:10px;letter-spacing:.15em;color:#fff;margin-top:25px;min-height:48px;padding:12px 18px;visibility:hidden}
+.opening[data-typed=true] .opening-enter{visibility:visible}
+.opening-skip{position:absolute;right:28px;top:20px;font-size:9px;letter-spacing:.1em;color:#b1b1b1;min-height:44px;padding:10px}
+.opening-source{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));left:24px;right:24px;text-align:center;font-size:9px;line-height:1.9;letter-spacing:.04em;color:#999}
+.opening-source a{color:#b1b1b1;text-decoration:none}
+@media(max-width:759px){.opening-number{font-size:clamp(44px,18vw,112px)}.opening-message{top:calc(47% + clamp(33px,9vw,56px) + 25px)}.opening-copy{max-width:340px;font-size:13px;min-height:100px}.opening-enter{margin-top:13px}.opening-skip{right:14px;top:12px}.opening-source{font-size:8px}}
+@media(max-height:650px){.opening-number{top:39%}.opening-message{top:calc(39% + clamp(33px,6vw,70px) + 20px)}.opening-copy{font-size:12px;line-height:1.7;min-height:78px}.opening-enter{margin-top:8px}.opening-source{bottom:14px}}
+
+@media(max-height:520px){.opening-number{top:30%;font-size:clamp(44px,10vw,76px)}.opening-message{top:calc(30% + clamp(22px,5vw,38px) + 18px)}.opening-copy{font-size:11px;line-height:1.5;min-height:60px}.opening-enter{min-height:40px;margin-top:6px}.opening-source{font-size:8px;bottom:10px}}

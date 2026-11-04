@@ -5,6 +5,17 @@
 <meta name="description" content="One animal. An entire world. An interactive wireframe atlas of endangered life."><title>FRAGILE — Field Atlas</title>
 </head>
 <body data-mode="animal">
+<section id="opening" class="opening" aria-labelledby="opening-title" hidden>
+ <h1 id="opening-title" class="sr-only">49,505 species are threatened with extinction.</h1>
+ <button class="opening-skip" data-opening-skip>SKIP INTRO</button>
+ <div class="opening-number" data-opening-count aria-hidden="true">0</div>
+ <div class="opening-message">
+  <div class="opening-copy" aria-hidden="true"><p data-opening-line></p><p data-opening-line></p></div>
+  <p class="sr-only">FRAGILE presents ten threatened animal species. The worldwide total includes animals, plants and fungi assessed by the IUCN Red List, updated 9 July 2026.</p>
+  <button class="opening-enter" data-opening-enter disabled>ENTER FRAGILE</button>
+ </div>
+ <p class="opening-source">Animals, plants &amp; fungi<br><a href="https://iucn.org/press-release/202607/desert-frog-deep-sea-molluscs-remarkable-species-risk-iucn-red-list" target="_blank" rel="noopener noreferrer">IUCN RED LIST · 9 JUL 2026</a></p>
+</section>
 <header class="masthead"><a class="wordmark" href="./">FRAGILE<span> / FIELD ATLAS</span></a><button id="open-index" aria-haspopup="dialog">THE COLLECTION <span id="header-count">01 / 10</span></button></header>
 <main id="exhibition">
  <div id="sculpture" tabindex="0" role="button" aria-label="Reveal the animal’s world. Click or press Enter. Drag to rotate." aria-describedby="interaction-hint"><span class="loading-label">ASSEMBLING LIFE…</span></div>
