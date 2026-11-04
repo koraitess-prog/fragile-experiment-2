@@ -268,3 +268,15 @@ body[data-opening=true]>:is(header,main,footer){visibility:hidden}
 @media(max-height:650px){.opening-number{top:39%}.opening-message{top:calc(39% + clamp(33px,6vw,70px) + 20px)}.opening-copy{font-size:12px;line-height:1.7;min-height:78px}.opening-enter{margin-top:8px}.opening-source{bottom:14px}}
 
 @media(max-height:520px){.opening-number{top:30%;font-size:clamp(44px,10vw,76px)}.opening-message{top:calc(30% + clamp(22px,5vw,38px) + 18px)}.opening-copy{font-size:11px;line-height:1.5;min-height:60px}.opening-enter{min-height:40px;margin-top:6px}.opening-source{font-size:8px;bottom:10px}}
+/* A longer hold gives the scale of the number room to register. */
+.opening-number{top:43%;font-size:clamp(90px,17vw,220px)}
+.opening-message{top:calc(43% + clamp(45px,8.5vw,110px) + 32px)}
+.opening-copy{line-height:1.9}
+.opening-enter{margin-top:30px;letter-spacing:.2em}
+.opening.is-shattering{background:transparent;pointer-events:none;transition:none}
+.opening.is-shattering *{visibility:hidden!important}
+body[data-opening=shattering]{overflow:hidden}
+body[data-mode=introducing] :is(.masthead,footer,.species-heading,.interaction,.world-notes,.journey-caption,.habitat-pin-label){visibility:hidden!important;opacity:0!important;transition:none!important}
+@media(max-width:759px){.opening-number{font-size:clamp(52px,20vw,130px)}.opening-message{top:calc(43% + clamp(26px,10vw,65px) + 28px)}body[data-mode=introducing] main{height:100svh;min-height:0}body[data-mode=introducing] #sculpture{inset:20px 0 145px}}
+@media(max-height:650px){.opening-number{top:35%;font-size:clamp(60px,14vw,150px)}.opening-message{top:calc(35% + clamp(30px,7vw,75px) + 24px)}.opening-enter{margin-top:10px}}
+@media(max-height:520px){.opening-number{top:29%;font-size:clamp(44px,10vw,76px)}.opening-message{top:calc(29% + clamp(22px,5vw,38px) + 18px)}.opening-enter{margin-top:6px}}

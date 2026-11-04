@@ -10,12 +10,12 @@ test('opening counter stays bounded and reaches the sourced total before typing'
  assert.equal(openingFrame(TYPE_START_MS+CHAR_MS).lines[0],'S');
 });
 
-test('opening copy types in order and finishes with the correct scope and ten-species sample',()=>{
+test('opening copy types in order and finishes with the correct scope without fixing the collection size',()=>{
  const firstLength=OPENING_FACT.lines[0].length;
  const first=openingFrame(TYPE_START_MS+firstLength*CHAR_MS);
  assert.equal(first.lines[0],OPENING_FACT.lines[0]);assert.equal(first.lines[1],'');assert.equal(first.complete,false);
  const last=openingFrame(20000);assert.deepEqual(last.lines,OPENING_FACT.lines);assert.equal(last.complete,true);assert.equal(last.count,49505);
- assert.match(last.lines[1],/10/);assert.match(OPENING_FACT.source,/^https:\/\/iucn.org\//);assert.equal(OPENING_FACT.date,'9 July 2026');
+ assert.doesNotMatch(last.lines[1],/\d/);assert.match(last.lines[1],/fraction/);assert.match(OPENING_FACT.source,/^https:\/\/iucn.org\//);assert.equal(OPENING_FACT.date,'9 July 2026');
 });
 
 test('reduced motion presents the complete number and message immediately',()=>{

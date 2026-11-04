@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {interpolateFrame} from './framing.js';
+import {textFragments,refinement} from './opening-fragments.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {faceData} from './sculpture/geometry.js';
 import {createNaturalMotion} from './sculpture/natural-motion.js';
@@ -17,6 +18,13 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  material.forceSinglePass=true;
  material.onBeforeCompile=shader=>{shader.uniforms.earthAmount=earthUniform;shader.vertexShader='varying vec3 hemisphere;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nhemisphere = normalize(normalMatrix * position);');shader.fragmentShader='uniform float earthAmount; varying vec3 hemisphere;\n'+shader.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\ngl_FragColor.a *= mix(1.0, mix(0.015, 0.22, smoothstep(-0.10, 0.15, hemisphere.z)), earthAmount);');};
  const geometry=new THREE.BufferGeometry(),mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;scene.add(mesh);
+ // Only the departing typography has solid ink. This fades before assembly;
+ // the animal continues to use the original, unfilled wireframe material.
+ const inkMaterial=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,transparent:true,depthWrite:false,toneMapped:false});
+ const ink=new THREE.Mesh(geometry,inkMaterial);ink.frustumCulled=false;ink.visible=false;scene.add(ink);
+ const arrivalGeometry=new THREE.BufferGeometry(),arrivalMaterial=new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,side:THREE.DoubleSide,transparent:true,opacity:0,toneMapped:false});
+ const arrival=new THREE.Mesh(arrivalGeometry,arrivalMaterial);arrival.frustumCulled=false;arrival.visible=false;scene.add(arrival);
+ let introduction=null;
  const origin=performance.now()/1000,focusDirection=new THREE.Vector3(),rigs=models.map(m=>{const faces=faceData(m);return createNaturalMotion(faces.map(f=>[f,f]),{tigerClockOrigin:origin,orangutanClockOrigin:origin});});
  let active=initial,mode='animal',busy=false,flight=null,started=0,destination='world',next=initial,positions,disposed=false,raf,previous=0,frames=0,earth=null,worldProgress=0,geographyOpacity=0,flightDistance=0,departureDistance=0,cameraStarted=0,departureFrame=null;
  const posed=models.map(m=>new Float32Array(m.positions));
@@ -93,6 +101,23 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  }
 
  function notify(){onState({mode,busy,species:active});}
+ async function enterFromText(elements,onStart){
+  const pixels=await textFragments(elements);if(disposed||busy)throw Error('Exhibition is not ready');
+  resize();camera.updateMatrixWorld();
+  const normal=camera.position.clone().normalize(),plane=new THREE.Plane(normal,0),ray=new THREE.Ray(),point=new THREE.Vector3();
+  const rect=renderer.domElement.getBoundingClientRect(),source=pixels.slice();
+  for(let i=0;i<pixels.length;i+=3){
+   point.set((pixels[i]-rect.left)/rect.width*2-1,1-(pixels[i+1]-rect.top)/rect.height*2,.5).unproject(camera);
+   ray.set(camera.position,point.sub(camera.position).normalize());ray.intersectPlane(plane,point);point.toArray(source,i);
+  }
+  const target=subdivide(pose(active,performance.now()/1000)),count=Math.max(source.length,target.length)/9;
+  const targetMap=refinement(target,count),textMap=refinement(source,count),from=textMap.apply(source),to=targetMap.apply(target);
+  controls.enableDamping=false;controls.update();controls.enableDamping=true;
+  destination='animal';next=active;departureDistance=camera.position.length();flightDistance=requiredDistance(to,'animal');
+  flight=makeFlight(from,to,camera.aspect,{orientation:camera.quaternion.clone(),distance:flightDistance,fov:camera.fov,width,fullHeight,stageHeight:height,top:stageTop});
+  setPositions(from);busy=true;mode='introducing';started=performance.now()/1000;cameraStarted=started;controls.enabled=false;ink.visible=true;inkMaterial.opacity=1;material.opacity=0;
+  const completed=new Promise(resolve=>introduction={targetMap,resolve});notify();onStart();return completed;
+ }
  function begin(to,index=active){if(busy)return;controls.enableDamping=false;controls.update();controls.enableDamping=true;destination=to;next=index;const time=performance.now()/1000;departureFrame=width<760&&mode==='world'?{top:stageTop,height}:null;let source=mode==='animal'?subdivide(pose(active,time)):positions.slice(),target;
   if(to==='world'){earth?.geometry.dispose();focusDirection.copy(camera.position).normalize();earth=earthGeometry(profiles[active].focus,camera.quaternion);target=earth.positions;geography.quaternion.copy(earth.rotation);buildMarkers();}
   else target=subdivide(pose(index,time));
@@ -109,13 +134,18 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
  const cancel=()=>down=null;
  container.addEventListener('pointerdown',pointerDown);container.addEventListener('pointermove',pointerMove);container.addEventListener('pointerup',pointerUp);container.addEventListener('pointercancel',cancel);
  function render(ms){if(disposed)return;raf=requestAnimationFrame(render);if(document.hidden)return;const time=ms/1000,dt=Math.min(.05,previous?time-previous:1/60);previous=time;
-  if(busy){const elapsed=time-started;camera.position.normalize().multiplyScalar(THREE.MathUtils.lerp(departureDistance,flightDistance,smooth((time-cameraStarted)/.9)));camera.lookAt(0,0,0);
-   if(destination==='animal')flight.target.set(subdivide(pose(next,time)));
+  if(busy){const elapsed=time-started;camera.position.normalize().multiplyScalar(THREE.MathUtils.lerp(departureDistance,flightDistance,smooth((time-cameraStarted-(introduction?1:0))/.9)));camera.lookAt(0,0,0);
+   if(destination==='animal'){const target=subdivide(pose(next,time));if(introduction)introduction.targetMap.apply(target,flight.target);else flight.target.set(target);}
+   if(introduction){
+    inkMaterial.opacity=1-smooth(elapsed/.85);ink.visible=elapsed<.85;
+    const settle=smooth((elapsed-6)/.8);material.opacity=smooth(elapsed/.55)*(1-settle);arrivalMaterial.opacity=settle;arrival.visible=settle>0;
+    if(arrival.visible){const data=pose(next,time);if(!arrivalGeometry.attributes.position)arrivalGeometry.setAttribute('position',new THREE.BufferAttribute(data.slice(),3));else arrivalGeometry.attributes.position.array.set(data);arrivalGeometry.attributes.position.needsUpdate=true;}
+   }
    if(departureFrame&&elapsed>=2.8){departureFrame=null;resize();departureDistance=camera.position.length();flightDistance=requiredDistance(flight.target,'animal');cameraStarted=time;}
    sampleFlight(flight,elapsed,positions);
-   worldProgress=destination==='world'?smooth((elapsed-4.3)/2.5):1-smooth(elapsed/1.1);
+   worldProgress=introduction?0:destination==='world'?smooth((elapsed-4.3)/2.5):1-smooth(elapsed/1.1);
    if(destination==='world'&&elapsed>=3&&mode!=='assembling'){mode='assembling';notify();if(width<760){resize();departureDistance=camera.position.length();flightDistance=requiredDistance(flight.target,'world');cameraStarted=time;}}
-   if(elapsed>=JOURNEY_SECONDS){busy=false;controls.enabled=true;active=next;mode=destination;worldProgress=mode==='world'?1:0;if(mode==='animal')setPositions(pose(active,time));notify();}
+   if(elapsed>=JOURNEY_SECONDS){busy=false;controls.enabled=true;active=next;mode=destination;worldProgress=mode==='world'?1:0;if(mode==='animal')setPositions(pose(active,time));ink.visible=false;arrival.visible=false;material.opacity=1;const intro=introduction;introduction=null;notify();intro?.resolve();}
   }else if(mode==='animal')positions.set(pose(active,time));
   if(projectionTween){const elapsed=time-projectionTween.start;applyProjection(interpolateFrame(projectionTween.from,projectionTween.to,elapsed));if(elapsed>=1.2)projectionTween=null;}
   geometry.attributes.position.needsUpdate=true;
@@ -143,5 +173,5 @@ export function createWorldViewer(container,models,profiles,initial,coast,onStat
   return{mode,busy,species:profiles[active].id,faces:positions.length/9,worldProgress,cameraDistance:camera.position.length(),stageHeight:height,stageTop,projectionHeight,projectionTop,journeyElapsed:busy?timeSinceStart():null,frames,azimuth:controls.getAzimuthalAngle(),fullyVisible:offscreenVertices===0,offscreenVertices,screenBounds:{left:box.min.x,right:box.max.x,bottom:box.min.y,top:box.max.y},wireframe:material.wireframe,geographyVisible:geography.visible,annotationOpacity:geographyOpacity,iconTriangles:iconTargets.length/9,visibleHabitatMarkers:markerGroup.children.filter(m=>m.visible).length,habitatLabelVisible:!pinLabel.hidden};
  }
 
- return{reveal,select,reset,diagnostics,dispose(){disposed=true;cancelAnimationFrame(raf);observer.disconnect();controls.dispose();geometry.dispose();material.dispose();coastGeo.dispose();coastMaterial.dispose();markerGeo.dispose();markerMaterial.dispose();ringGeo.dispose();ringMaterial.dispose();pinLabel.remove();earth?.geometry.dispose();iconGeo.dispose();iconMat.dispose();renderer.dispose();container.removeEventListener('pointerdown',pointerDown);container.removeEventListener('pointermove',pointerMove);container.removeEventListener('pointerup',pointerUp);container.removeEventListener('pointercancel',cancel);}};
+ return{enterFromText,reveal,select,reset,diagnostics,dispose(){disposed=true;introduction?.resolve();cancelAnimationFrame(raf);observer.disconnect();controls.dispose();geometry.dispose();material.dispose();inkMaterial.dispose();arrivalGeometry.dispose();arrivalMaterial.dispose();coastGeo.dispose();coastMaterial.dispose();markerGeo.dispose();markerMaterial.dispose();ringGeo.dispose();ringMaterial.dispose();pinLabel.remove();earth?.geometry.dispose();iconGeo.dispose();iconMat.dispose();renderer.dispose();container.removeEventListener('pointerdown',pointerDown);container.removeEventListener('pointermove',pointerMove);container.removeEventListener('pointerup',pointerUp);container.removeEventListener('pointercancel',cancel);}};
 }

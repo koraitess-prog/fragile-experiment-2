@@ -41,4 +41,12 @@ Mobile fragment journeys interpolate responsive camera framing continuously, pre
 
 ## Opening
 
-First entry in a tab session counts to the dated IUCN total of 49,505 threatened species, then types a short explanation of this ten-species collection. The scope includes animals, plants and fungi; the 9 July 2026 source is linked on screen. Enter opens the loaded sculpture; Skip is always available. Reduced motion shows the final statistic and text immediately. Add `?intro=1` to replay the opening for review, or `?intro=0` to skip.
+First entry in a tab session counts to the dated IUCN total of 49,505 threatened species, then types a short explanation of a growing selection of threatened life. The scope includes animals, plants and fungi; the 9 July 2026 source is linked on screen. Enter opens the loaded sculpture; Skip is always available. Reduced motion shows the final statistic and text immediately. Add `?intro=1` to replay the opening for review, or `?intro=0` to skip.
+
+
+### Slower typography-to-sculpture opening
+The counter is larger and takes 5.4 seconds, then holds for 1.2 seconds before a slower typed message. The message does not fix the collection size. ENTER triangulates the actual IBM Plex Mono Light glyph outlines at their rendered positions and sends them through the existing 6.8-second fragment journey into the first animal. Temporary display subdivisions settle gently into the original wireframe. Skip and reduced motion enter directly. Animal models, ordinary transitions and the original FRAGILE site are unchanged.
+
+The locally derived font outline data retains the existing IBM Plex Mono OFL license in THIRD_PARTY. The optional Python conversion script uses fontTools only at build time.
+
+Source checkpoint: ea6b311a81275f631a2c2b6c3b8b09cf3bed8035 (opening); formatting cleanup follows locally.
