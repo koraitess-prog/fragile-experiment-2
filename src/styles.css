@@ -255,7 +255,7 @@ body[data-opening=true]>:is(header,main,footer){visibility:hidden}
 .opening-number{position:absolute;left:0;right:0;top:47%;transform:translateY(-50%);text-align:center;font-size:clamp(72px,13vw,164px);font-weight:300;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
 .opening-message{position:absolute;top:calc(47% + clamp(36px,6.5vw,82px) + 30px);left:24px;right:24px;text-align:center}
 .opening-copy{max-width:620px;margin:auto;min-height:70px;font-size:clamp(13px,1.2vw,17px);font-weight:300;line-height:1.8;letter-spacing:.01em}
-.opening-copy p+ p{margin-top:7px;color:#b1b1b1}
+.opening-copy p+ p{margin-top:7px;font-size:.82em;color:#b1b1b1}
 .opening-copy p:empty::before{content:'\00a0'}
 .opening-copy p:not(:empty):last-child::after{content:'';display:inline-block;width:1px;height:1em;background:#fff;vertical-align:-.12em;margin-left:3px}
 .opening[data-typed=true] .opening-copy p::after{display:none}
