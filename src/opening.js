@@ -2,7 +2,7 @@ export const OPENING_FACT={
  total:49505,
  date:'9 July 2026',
  source:'https://iucn.org/press-release/202607/desert-frog-deep-sea-molluscs-remarkable-species-risk-iucn-red-list',
- lines:['Species are threatened with extinction.','FRAGILE reveals a fraction of their world.'],
+ lines:['Species are threatened with extinction.','FRAGILE reveals a fraction of them.'],
 };
 export const COUNT_MS=5400,TYPE_START_MS=6600,CHAR_MS=48,LINE_PAUSE_MS=650;
 const sessionKey='fragile-experiment-2-opening-v2';
